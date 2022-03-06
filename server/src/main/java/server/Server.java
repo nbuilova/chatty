@@ -56,23 +56,45 @@ public class Server {
         String message = String.format("[ %s ] to [ %s ] : %s", sender.getNickname(), receiver, msg);
 
         for (ClientHandler c : clients) {
-            if (c.getNickname().equals(receiver)){
+            if (c.getNickname().equals(receiver)) {
                 c.sendMsg(message);
-                if(!sender.getNickname().equals(receiver)){
+                if (!sender.getNickname().equals(receiver)) {
                     sender.sendMsg(message);
                 }
                 return;
             }
         }
-        sender.sendMsg("User " + receiver +" not found");
+        sender.sendMsg("User " + receiver + " not found");
+    }
+
+    public boolean isLoginAuthenticated(String login) {
+        for (ClientHandler c : clients) {
+            if (c.getLogin().equals(login)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void broadcastClientList() {
+        StringBuilder sb = new StringBuilder("/clientlist");
+        for (ClientHandler c : clients) {
+            sb.append(" ").append(c.getNickname());
+        }
+        String msg = sb.toString();
+        for (ClientHandler c : clients) {
+            c.sendMsg(msg);
+        }
     }
 
     public void subscribe(ClientHandler clientHandler) {
         clients.add(clientHandler);
+        broadcastClientList();
     }
 
     public void unsubscribe(ClientHandler clientHandler) {
         clients.remove(clientHandler);
+        broadcastClientList();
     }
 
     public AuthService getAuthService() {

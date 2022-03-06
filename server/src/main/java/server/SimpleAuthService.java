@@ -23,7 +23,6 @@ public class SimpleAuthService implements AuthService {
         users.add(new UserData("qwe", "qwe", "qwe"));
         users.add(new UserData("asd", "asd", "asd"));
         users.add(new UserData("zxc", "zxc", "zxc"));
-
         for (int i = 0; i < 9; i++) {
             users.add(new UserData("user" + i, "pass" + i, "nick" + i));
         }
@@ -37,5 +36,16 @@ public class SimpleAuthService implements AuthService {
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean registration(String login, String pass, String nickname) {
+        for (UserData u : users) {
+            if (u.login.equals(login) || u.nickname.equals(nickname)) {
+                return false;
+            }
+        }
+        users.add(new UserData(login, pass, nickname));
+        return true;
     }
 }
