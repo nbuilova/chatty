@@ -9,4 +9,15 @@ public class Command {
     public static final String REG_NO = "/reg_no";
     public static final String SERVICE = "/";
     public static final String PRIVATE = "/w";
+
+    public static void main(String[] args) {
+       try{
+           return;
+       }finally {
+           System.out.println("Finally");
+       }
+
+    }
 }
+
+
