@@ -52,6 +52,7 @@ public class Controller implements Initializable {
     private Stage stage;
     private Stage regStage;
     private RegController regController;
+    private String login;
 
     public void setAuthenticated(boolean authenticated) {
         this.authenticated = authenticated;
@@ -64,6 +65,7 @@ public class Controller implements Initializable {
 
         if (!authenticated) {
             nickname = "";
+            History.stop();
         }
         textArea.clear();
         setTitle(nickname);
@@ -105,6 +107,8 @@ public class Controller implements Initializable {
                             if (str.startsWith("/auth_ok")) {
                                 nickname = str.split(" ")[1];
                                 setAuthenticated(true);
+                                textArea.appendText(History.getLast100Lines(login));
+                                History.start(login);
                                 break;
                             }
                             if (str.equals("/reg_ok") || str.equals("/reg_no")) {
@@ -130,8 +134,13 @@ public class Controller implements Initializable {
                                     }
                                 });
                             }
+                            if (str.startsWith("/yournickis ")) {
+                                nickname = str.split(" ")[1];
+                                setTitle(nickname);
+                            }
                         } else {
                             textArea.appendText(str + "\n");
+                            History.writeLine(str);
                         }
                     }
                 } catch (IOException e) {
@@ -166,6 +175,9 @@ public class Controller implements Initializable {
         if (socket == null || socket.isClosed()) {
             connect();
         }
+
+        login = loginField.getText().trim();
+
         String msg = String.format("/auth %s %s", loginField.getText().trim(), passwordField.getText().trim());
         passwordField.clear();
 
